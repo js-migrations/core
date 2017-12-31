@@ -1,7 +1,7 @@
 {
   "name": "@js-migrations/core",
   "version": "1.0.0",
-  "description": "Provides common a service for migrations in JavaScript.",
+  "description": "Provides a common service for migrations in JavaScript.",
   "repository": {
     "type": "git",
     "url": "https://github.com/js-migrations/core"
