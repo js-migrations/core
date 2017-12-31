@@ -1,0 +1,8 @@
+.DS_STORE
+/.env
+/.nyc_output
+/dist
+/node_modules
+/notes.md
+/npm-debug.log
+/yarn.lock
