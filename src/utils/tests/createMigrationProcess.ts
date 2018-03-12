@@ -3,5 +3,8 @@ export default () => {
   const process = () => {
     processed = true;
   };
-  return { processed, process };
+  const getProcessed = () => {
+    return processed;
+  };
+  return { getProcessed, process };
 };

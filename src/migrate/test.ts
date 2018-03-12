@@ -34,17 +34,17 @@ export default (repo: RepoFacade) => {
     });
 
     it('should process migrations', async () => {
-      const { process, processed } = createMigrationProcess();
+      const { process, getProcessed } = createMigrationProcess();
       const service = createService({ testMigration: createTestUpMigration(process) });
       await service.migrate();
-      assert.equal(processed, true);
+      assert.equal(getProcessed(), true);
     });
 
     it('should not reprocess migrations', async () => {
-      const { process, processed } = createMigrationProcess();
+      const { process, getProcessed } = createMigrationProcess();
       await createService({ testMigration: createTestUpMigration() }).migrate();
       await createService({ testMigration: createTestUpMigration(process) }).migrate();
-      assert.equal(processed, false);
+      assert.equal(getProcessed(), false);
     });
 
     it('should skip processed migrations after unprocessed migrations', async () => {
@@ -55,8 +55,8 @@ export default (repo: RepoFacade) => {
         migrationToProcess: createTestUpMigration(unskippedMigration.process),
         migrationToSkip: createTestUpMigration(skippedMigration.process),
       }).migrate();
-      assert.equal(skippedMigration, false);
-      assert.equal(unskippedMigration, true);
+      assert.equal(skippedMigration.getProcessed(), false);
+      assert.equal(unskippedMigration.getProcessed(), true);
     });
 
     it('should skip processed migrations before unprocessed migrations', async () => {
@@ -68,8 +68,8 @@ export default (repo: RepoFacade) => {
         // tslint:disable-next-line:object-literal-sort-keys
         migrationToProcess: createTestUpMigration(unskippedMigration.process),
       }).migrate();
-      assert.equal(skippedMigration, false);
-      assert.equal(unskippedMigration, true);
+      assert.equal(skippedMigration.getProcessed(), false);
+      assert.equal(unskippedMigration.getProcessed(), true);
     });
   });
 };

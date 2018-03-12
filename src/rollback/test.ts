@@ -45,18 +45,18 @@ export default (repo: RepoFacade) => {
     });
 
     it('should process rollback for a processed migration', async () => {
-      const { process, processed } = createMigrationProcess();
+      const { process, getProcessed } = createMigrationProcess();
       const service = createService({ testMigration: createTestDownMigration(process) });
       await service.migrate();
       await service.rollback();
-      assert.equal(processed, true);
+      assert.equal(getProcessed(), true);
     });
 
     it('should not process rollback for a unprocessed migration', async () => {
-      const { process, processed } = createMigrationProcess();
+      const { process, getProcessed } = createMigrationProcess();
       const service = createService({ testMigration: createTestDownMigration(process) });
       await service.rollback();
-      assert.equal(processed, true);
+      assert.equal(getProcessed(), false);
     });
 
     it('should skip processed migrations after unprocessed migrations', async () => {
@@ -66,9 +66,9 @@ export default (repo: RepoFacade) => {
       await createService({
         migrationToProcess: createTestDownMigration(unskippedMigration.process),
         migrationToSkip: createTestDownMigration(skippedMigration.process),
-      }).migrate();
-      assert.equal(skippedMigration, false);
-      assert.equal(unskippedMigration, true);
+      }).rollback();
+      assert.equal(skippedMigration.getProcessed(), false);
+      assert.equal(unskippedMigration.getProcessed(), true);
     });
 
     it('should skip processed migrations before unprocessed migrations', async () => {
@@ -79,9 +79,9 @@ export default (repo: RepoFacade) => {
         migrationToSkip: createTestDownMigration(skippedMigration.process),
         // tslint:disable-next-line:object-literal-sort-keys
         migrationToProcess: createTestDownMigration(unskippedMigration.process),
-      }).migrate();
-      assert.equal(skippedMigration, false);
-      assert.equal(unskippedMigration, true);
+      }).rollback();
+      assert.equal(skippedMigration.getProcessed(), false);
+      assert.equal(unskippedMigration.getProcessed(), true);
     });
   });
 };
