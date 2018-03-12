@@ -31,7 +31,7 @@
     "@ht2-labs/typescript-project": "1.0.9",
     "@types/bluebird": "3.5.20",
     "@types/lodash": "4.14.104",
-    "@types/mocha": "2.2.44",
+    "@types/mocha": "2.2.48",
     "@types/node": "8.5.2",
     "assert-rejects": "0.1.1",
     "jscpd": "0.6.17",
