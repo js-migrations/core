@@ -5,7 +5,7 @@ import rollbackKey from '../utils/rollbackKey';
 import Signature from './Signature';
 
 export default (config: FacadeConfig): Signature => {
-  return async ({ key, force }) => {
+  return async ({ key, force = false }) => {
     const isProcessed = await hasProcessedKey(config, key);
     if (!isProcessed && !force) {
       throw new UnprocessedMigrationError(key);

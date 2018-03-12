@@ -33,6 +33,7 @@
     "@types/lodash": "^4.14.91",
     "@types/mocha": "2.2.44",
     "@types/node": "^8.5.2",
+    "assert-rejects": "^0.1.1",
     "jscpd": "0.6.17",
     "mocha": "4.0.1",
     "nyc": "11.3.0",

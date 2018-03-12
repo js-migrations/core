@@ -5,9 +5,9 @@ import migrateKey from '../utils/migrateKey';
 import Signature from './Signature';
 
 export default (config: FacadeConfig): Signature => {
-  return async ({ key, force }) => {
-    const hasRunBefore = await hasProcessedKey(config, key);
-    if (hasRunBefore && !force) {
+  return async ({ key, force = false }) => {
+    const isProcessed = await hasProcessedKey(config, key);
+    if (isProcessed && !force) {
       throw new ProcessedMigrationError(key);
     }
 

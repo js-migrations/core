@@ -1,15 +1,11 @@
-import FacadeConfig from './FacadeConfig';
-import migrate from './migrate';
-import migrateByKey from './migrateByKey';
-import rollback from './rollback';
-import rollbackByKey from './rollbackByKey';
-import Service from './Service';
+import MigrateSignature from './migrate/Signature';
+import MigrateByKeySignature from './migrateByKey/Signature';
+import RollbackSignature from './rollback/Signature';
+import RollbackByKeySignature from './rollbackByKey/Signature';
 
-export default (config: FacadeConfig): Service => {
-  return {
-    migrate: migrate(config),
-    migrateByKey: migrateByKey(config),
-    rollback: rollback(config),
-    rollbackByKey: rollbackByKey(config),
-  };
-};
+export default interface Facade {
+  readonly migrate: MigrateSignature;
+  readonly migrateByKey: MigrateByKeySignature;
+  readonly rollback: RollbackSignature;
+  readonly rollbackByKey: RollbackByKeySignature;
+}

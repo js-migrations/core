@@ -1,5 +1,6 @@
 import { defaultTo } from 'lodash';
 import FacadeConfig from '../FacadeConfig';
+import FailingMigrationError from './errors/FailingMigrationError';
 import getMigrationByKey from './getMigrationByKey';
 
 export interface Opts {
@@ -12,7 +13,11 @@ export default async ({ config, key, batchStart }: Opts) => {
   const selectedMigration = getMigrationByKey(config.migrations, key);
   config.log(`Starting to migrate with ${key}`);
   const migrationStart = new Date();
-  await selectedMigration.up();
+  try {
+    await selectedMigration.up();
+  } catch (err) {
+    throw new FailingMigrationError(key, err);
+  }
   await config.repo.updateProcessedMigration({
     key,
     lastBatch: defaultTo(batchStart, migrationStart),

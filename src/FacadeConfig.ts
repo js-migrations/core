@@ -1,8 +1,8 @@
-import Repo from './Repo';
-import Migration from './utils/types/Migration';
+import RepoFacade from './RepoFacade';
+import MigrationDictionary from './utils/types/MigrationDictionary';
 
 export default interface FacadeConfig {
-  readonly repo: Repo;
+  readonly repo: RepoFacade;
   readonly log: (message: string) => void;
-  readonly migrations: { readonly [key: string]: Migration };
+  readonly migrations: MigrationDictionary;
 }

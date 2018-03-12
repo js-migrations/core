@@ -1,4 +1,5 @@
 import FacadeConfig from '../FacadeConfig';
+import FailingMigrationError from './errors/FailingMigrationError';
 import getMigrationByKey from './getMigrationByKey';
 
 export interface Opts {
@@ -9,7 +10,11 @@ export interface Opts {
 export default async ({ config, key }: Opts) => {
   const migration = getMigrationByKey(config.migrations, key);
   config.log(`Starting to rollback with ${key}`);
-  await migration.down();
+  try {
+    await migration.down();
+  } catch (err) {
+    throw new FailingMigrationError(key, err);
+  }
   await config.repo.removeProcessedMigration(key);
   config.log(`Completed rollback with ${key}`);
 };
