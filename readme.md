@@ -9,8 +9,8 @@
 ### Create a repository facade
 This package contains the [RepoFacade TypeScript interface](./src/RepoFacade.ts). You can create a facade to match the interface using the factories below.
 
-- [Knex](https://github.com/js-migrations/knex)
-- [Mongo](https://github.com/js-migrations/mongo) - Coming Soon.
+- [Knex](https://github.com/js-migrations/knex/blob/master/readme.md)
+- [Mongo](https://github.com/js-migrations/mongo/blob/master/readme.md) - Coming Soon.
 
 ### Use the factory
 ```typescript
