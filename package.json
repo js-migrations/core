@@ -15,7 +15,7 @@
     "cover": "nyc npm test",
     "duplication": "jscpd",
     "clean": "rimraf dist",
-    "semantic-release": "ht2-release-private-circleci"
+    "semantic-release": "ht2-release-public-circleci-lib"
   },
   "nyc": {
     "lines": 100,
@@ -38,5 +38,8 @@
     "mocha": "4.0.1",
     "nyc": "11.3.0",
     "rimraf": "2.6.2"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }
