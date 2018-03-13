@@ -2,6 +2,7 @@ import * as sourceMapSupport from 'source-map-support';
 sourceMapSupport.install();
 
 import factoryTest from './factoryTest';
+import LockedMigrationsError from './utils/errors/LockedMigrationsError';
 import ProcessedMigration from './utils/types/ProcessedMigration';
 
 let processedMigrations: ProcessedMigration[] = []; // tslint:disable-line:no-let
@@ -16,7 +17,7 @@ factoryTest({
   },
   lockMigrations: async () => {
     if (hasLockedMigrations) {
-      throw new Error();
+      throw new LockedMigrationsError();
     }
     hasLockedMigrations = true;
   },
