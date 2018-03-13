@@ -1,3 +1,6 @@
+import * as sourceMapSupport from 'source-map-support';
+sourceMapSupport.install();
+
 import factoryTest from './factoryTest';
 import ProcessedMigration from './utils/types/ProcessedMigration';
 

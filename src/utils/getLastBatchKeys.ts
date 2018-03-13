@@ -11,8 +11,9 @@ export default async (config: FacadeConfig) => {
     return [];
   }
 
+  const lastBatchIsoStart = lastBatchStart.toISOString();
   const lastBatchMigrations = processedMigrations.filter((migration) => {
-    return migration.lastBatch === lastBatchStart;
+    return migration.lastBatch.toISOString() === lastBatchIsoStart;
   });
   return lastBatchMigrations.map((migration) => migration.key);
 };

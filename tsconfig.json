@@ -6,6 +6,9 @@
     "typeRoots": [
       "./@types",
       "./node_modules/@types"
+    ],
+    "lib": [
+      "ES2015"
     ]
   },
   "includes": [

@@ -36,11 +36,13 @@
     "@types/lodash": "4.14.104",
     "@types/mocha": "2.2.48",
     "@types/node": "8.9.5",
+    "@types/source-map-support": "0.4.0",
     "assert-rejects": "0.1.1",
     "jscpd": "0.6.17",
     "mocha": "4.1.0",
     "nyc": "11.6.0",
-    "rimraf": "2.6.2"
+    "rimraf": "2.6.2",
+    "source-map-support": "0.5.3"
   },
   "publishConfig": {
     "access": "public"
