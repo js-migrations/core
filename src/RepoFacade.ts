@@ -5,4 +5,6 @@ export default interface RepoFacade {
   readonly updateProcessedMigration: (migration: ProcessedMigration) => Promise<void>;
   readonly removeProcessedMigration: (key: string) => Promise<void>;
   readonly clearMigrations: () => Promise<void>;
+  readonly lockMigrations: () => Promise<void>;
+  readonly unlockMigrations: () => Promise<void>;
 }
