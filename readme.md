@@ -3,7 +3,7 @@
 
 ### Usage
 1. Install it with `npm i @js-migrations/core`.
-1. [Create a repository facade](#create-a-repository-facade)
+1. [Create a repository facade](#create-a-repository-facade).
 1. [Use the factory to create the service facade](#use-the-factory).
 
 ### Create a repository facade
