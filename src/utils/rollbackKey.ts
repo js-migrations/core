@@ -8,7 +8,8 @@ export interface Opts {
 }
 
 export default async ({ config, key }: Opts) => {
-  const migration = getMigrationByKey(config.migrations, key);
+  const migrations = await config.repo.getMigrations();
+  const migration = getMigrationByKey(migrations, key);
   config.log(`Starting to rollback with ${key}`);
   try {
     await migration.down();

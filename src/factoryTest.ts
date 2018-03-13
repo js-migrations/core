@@ -1,18 +1,20 @@
 import migrateTest from './migrate/test';
 import migrateByKeyTest from './migrateByKey/test';
-import RepoFacade from './RepoFacade';
 import rollbackTest from './rollback/test';
 import rollbackByKeyTest from './rollbackByKey/test';
+import TestFactory from './utils/tests/TestFactory';
 
-export default (repo: RepoFacade) => {
+const testFactory: TestFactory = (repoFactory) => {
   describe('factory', () => {
     beforeEach(async () => {
-      await repo.clearMigrations();
+      await repoFactory({}).clearMigrations();
     });
 
-    migrateTest(repo);
-    migrateByKeyTest(repo);
-    rollbackTest(repo);
-    rollbackByKeyTest(repo);
+    migrateTest(repoFactory);
+    migrateByKeyTest(repoFactory);
+    rollbackTest(repoFactory);
+    rollbackByKeyTest(repoFactory);
   });
 };
+
+export default testFactory;

@@ -2,22 +2,22 @@ import * as assert from 'assert';
 import * as assertRejects from 'assert-rejects';
 import 'mocha'; // tslint:disable-line:no-import-side-effect
 import factory from '../factory';
-import RepoFacade from '../RepoFacade';
 import FailingMigrationError from '../utils/errors/FailingMigrationError';
 import MissingMigrationError from '../utils/errors/MissingMigrationError';
 import ProcessedMigrationError from '../utils/errors/ProcessedMigrationError';
 import assertLocked from '../utils/tests/assertLocked';
 import createMigrationProcess from '../utils/tests/createMigrationProcess';
 import createTestUpMigration from '../utils/tests/createTestUpMigration';
+import TestFactory from '../utils/tests/TestFactory';
 import MigrationDictionary from '../utils/types/MigrationDictionary';
 
-export default (repo: RepoFacade) => {
+const testMigrateByKey: TestFactory = (repoFactory) => {
   const successfulMigration = createTestUpMigration();
   const failingMigration = createTestUpMigration(() => { throw new Error(); });
 
   const createService = (migrations: MigrationDictionary) => {
     const log = () => null;
-    return factory({ log, migrations, repo });
+    return factory({ log, repo: repoFactory(migrations) });
   };
 
   describe('migrateByKey', () => {
@@ -66,3 +66,5 @@ export default (repo: RepoFacade) => {
     });
   });
 };
+
+export default testMigrateByKey;
