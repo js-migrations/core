@@ -4,8 +4,8 @@ import 'mocha'; // tslint:disable-line:no-import-side-effect
 import factory from '../factory';
 import RepoFacade from '../RepoFacade';
 import FailingMigrationError from '../utils/errors/FailingMigrationError';
-import LockedMigrationsError from '../utils/errors/LockedMigrationsError';
 import UnprocessedMigrationError from '../utils/errors/UnprocessedMigrationError';
+import assertLocked from '../utils/tests/assertLocked';
 import createMigrationProcess from '../utils/tests/createMigrationProcess';
 import createTestDownMigration from '../utils/tests/createTestDownMigration';
 import MigrationDictionary from '../utils/types/MigrationDictionary';
@@ -59,11 +59,10 @@ export default (repo: RepoFacade) => {
     it('should error when migrations are locked', async () => {
       const service = createService({ successfulMigration });
       await service.migrate();
-      const promise = Promise.all([
+      await assertLocked([
         service.rollbackByKey({ key: 'successfulMigration' }),
         service.rollbackByKey({ key: 'successfulMigration' }),
       ]);
-      await assertRejects(promise, LockedMigrationsError);
     });
   });
 };
