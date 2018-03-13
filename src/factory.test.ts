@@ -15,7 +15,7 @@ factoryTest({
     return processedMigrations;
   },
   lockMigrations: async () => {
-    if (hasLockedMigrations === true) {
+    if (hasLockedMigrations) {
       throw new Error();
     }
     hasLockedMigrations = true;
