@@ -4,12 +4,14 @@ import 'mocha'; // tslint:disable-line:no-import-side-effect
 import factory from '../factory';
 import RepoFacade from '../RepoFacade';
 import FailingMigrationError from '../utils/errors/FailingMigrationError';
+import LockedMigrationsError from '../utils/errors/LockedMigrationsError';
 import UnprocessedMigrationError from '../utils/errors/UnprocessedMigrationError';
 import createMigrationProcess from '../utils/tests/createMigrationProcess';
 import createTestDownMigration from '../utils/tests/createTestDownMigration';
 import MigrationDictionary from '../utils/types/MigrationDictionary';
 
 export default (repo: RepoFacade) => {
+  const successfulMigration = createTestDownMigration();
   const failingMigration = createTestDownMigration(() => { throw new Error(); });
 
   const createService = (migrations: MigrationDictionary) => {
@@ -52,6 +54,16 @@ export default (repo: RepoFacade) => {
       const service = createService({ testMigration: createTestDownMigration(process) });
       await service.rollbackByKey({ key: 'testMigration', force: true });
       assert.equal(getProcessed(), true);
+    });
+
+    it('should error when migrations are locked', async () => {
+      const service = createService({ successfulMigration });
+      await service.migrate();
+      const promise = Promise.all([
+        service.rollbackByKey({ key: 'successfulMigration' }),
+        service.rollbackByKey({ key: 'successfulMigration' }),
+      ]);
+      await assertRejects(promise, LockedMigrationsError);
     });
   });
 };
