@@ -10,7 +10,8 @@ export interface Opts {
 }
 
 export default async ({ config, key, batchStart }: Opts) => {
-  const selectedMigration = getMigrationByKey(config.migrations, key);
+  const migrations = await config.repo.getMigrations();
+  const selectedMigration = getMigrationByKey(migrations, key);
   config.log(`Starting to migrate with ${key}`);
   const migrationStart = new Date();
   try {
