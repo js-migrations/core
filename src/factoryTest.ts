@@ -7,7 +7,7 @@ import TestFactory from './utils/tests/TestFactory';
 const testFactory: TestFactory = (repoFactory) => {
   describe('factory', () => {
     beforeEach(async () => {
-      await repoFactory({}).clearMigrations();
+      await repoFactory([]).clearMigrations();
     });
 
     migrateTest(repoFactory);
