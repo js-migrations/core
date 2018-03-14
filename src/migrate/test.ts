@@ -1,29 +1,22 @@
 import * as assert from 'assert';
 import * as assertRejects from 'assert-rejects';
 import 'mocha'; // tslint:disable-line:no-import-side-effect
-import factory from '../factory';
 import DuplicateKeyError from '../utils/errors/DuplicateKeyError';
 import FailingMigrationError from '../utils/errors/FailingMigrationError';
 import assertLocked from '../utils/tests/assertLocked';
 import createMigrationProcess from '../utils/tests/createMigrationProcess';
 import createTestUpMigration from '../utils/tests/createTestUpMigration';
 import TestFactory from '../utils/tests/TestFactory';
-import Migration from '../utils/types/Migration';
 
-const testMigrate: TestFactory = (repoFactory) => {
+const testMigrate: TestFactory = (createService) => {
   const successfulMigration = createTestUpMigration(undefined, 'successfulMigration');
   const failingMigration = createTestUpMigration(() => { throw new Error(); }, 'failingMigration');
   const skippableKey = 'skippableMigration';
   const skippableMigration = createTestUpMigration(undefined, skippableKey);
 
-  const createService = (migrations: Migration[] = []) => {
-    const log = () => null;
-    return factory({ log, repo: repoFactory(migrations) });
-  };
-
   describe('migrate', () => {
     it('should not error when there are no migrations', async () => {
-      const service = createService();
+      const service = createService([]);
       await service.migrate();
     });
 
@@ -82,7 +75,7 @@ const testMigrate: TestFactory = (repoFactory) => {
     });
 
     it('should error when migrations are locked', async () => {
-      const service = createService();
+      const service = createService([]);
       await assertLocked([service.migrate(), service.migrate()]);
     });
   });

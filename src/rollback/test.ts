@@ -2,7 +2,6 @@
 import * as assert from 'assert';
 import * as assertRejects from 'assert-rejects';
 import 'mocha'; // tslint:disable-line:no-import-side-effect
-import factory from '../factory';
 import DuplicateKeyError from '../utils/errors/DuplicateKeyError';
 import FailingMigrationError from '../utils/errors/FailingMigrationError';
 import MissingMigrationError from '../utils/errors/MissingMigrationError';
@@ -10,9 +9,8 @@ import assertLocked from '../utils/tests/assertLocked';
 import createMigrationProcess from '../utils/tests/createMigrationProcess';
 import createTestDownMigration from '../utils/tests/createTestDownMigration';
 import TestFactory from '../utils/tests/TestFactory';
-import Migration from '../utils/types/Migration';
 
-const testRollback: TestFactory = (repoFactory) => {
+const testRollback: TestFactory = (createService) => {
   const successfulMigration = createTestDownMigration(undefined, 'successfulMigration');
   const failingMigration = createTestDownMigration(() => {
     throw new Error();
@@ -20,14 +18,9 @@ const testRollback: TestFactory = (repoFactory) => {
   const unskippableKey = 'unskippableMigration';
   const unskippableMigration = createTestDownMigration(undefined, unskippableKey);
 
-  const createService = (migrations: Migration[] = []) => {
-    const log = () => null;
-    return factory({ log, repo: repoFactory(migrations) });
-  };
-
   describe('rollback', () => {
     it('should not error when there are no migrations', async () => {
-      const service = createService();
+      const service = createService([]);
       await service.rollback();
     });
 
@@ -40,7 +33,7 @@ const testRollback: TestFactory = (repoFactory) => {
 
     it('should error when a processed migration is missing', async () => {
       await createService([successfulMigration]).migrate();
-      const promise = createService().rollback();
+      const promise = createService([]).rollback();
       await assertRejects(promise, MissingMigrationError);
     });
 
@@ -98,7 +91,7 @@ const testRollback: TestFactory = (repoFactory) => {
     });
 
     it('should error when migrations are locked', async () => {
-      const service = createService();
+      const service = createService([]);
       await assertLocked([service.rollback(), service.rollback()]);
     });
   });

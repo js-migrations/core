@@ -1,7 +1,6 @@
 import * as assert from 'assert';
 import * as assertRejects from 'assert-rejects';
 import 'mocha'; // tslint:disable-line:no-import-side-effect
-import factory from '../factory';
 import DuplicateKeyError from '../utils/errors/DuplicateKeyError';
 import FailingMigrationError from '../utils/errors/FailingMigrationError';
 import MissingMigrationError from '../utils/errors/MissingMigrationError';
@@ -10,20 +9,14 @@ import assertLocked from '../utils/tests/assertLocked';
 import createMigrationProcess from '../utils/tests/createMigrationProcess';
 import createTestUpMigration, { testMigrationKey } from '../utils/tests/createTestUpMigration';
 import TestFactory from '../utils/tests/TestFactory';
-import Migration from '../utils/types/Migration';
 
-const testMigrateByKey: TestFactory = (repoFactory) => {
+const testMigrateByKey: TestFactory = (createService) => {
   const successfulMigration = createTestUpMigration();
   const failingMigration = createTestUpMigration(() => { throw new Error(); });
 
-  const createService = (migrations: Migration[] = []) => {
-    const log = () => null;
-    return factory({ log, repo: repoFactory(migrations) });
-  };
-
   describe('migrateByKey', () => {
     it('should error when the migration is missing', async () => {
-      const service = createService();
+      const service = createService([]);
       const promise = service.migrateByKey({ key: 'missingKey' });
       await assertRejects(promise, MissingMigrationError);
     });

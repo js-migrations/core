@@ -1,6 +1,6 @@
-import RepoFacade from '../../RepoFacade';
+import Facade from '../../Facade';
 import Migration from '../types/Migration';
 
-type TestFactory = (repoFactory: (migrations: Migration[]) => RepoFacade) => void;
+type TestFactory = (serviceFactory: (migrations: Migration[]) => Facade) => void;
 
 export default TestFactory;
