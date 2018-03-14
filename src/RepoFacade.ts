@@ -1,8 +1,8 @@
-import MigrationDictionary from './utils/types/MigrationDictionary';
+import Migration from './utils/types/Migration';
 import ProcessedMigration from './utils/types/ProcessedMigration';
 
 export default interface RepoFacade {
-  readonly getMigrations: () => Promise<MigrationDictionary>;
+  readonly getMigrations: () => Promise<Migration[]>;
   readonly getProcessedMigrations: () => Promise<ProcessedMigration[]>;
   readonly updateProcessedMigration: (migration: ProcessedMigration) => Promise<void>;
   readonly removeProcessedMigration: (key: string) => Promise<void>;

@@ -2,66 +2,75 @@ import * as assert from 'assert';
 import * as assertRejects from 'assert-rejects';
 import 'mocha'; // tslint:disable-line:no-import-side-effect
 import factory from '../factory';
+import DuplicateKeyError from '../utils/errors/DuplicateKeyError';
 import FailingMigrationError from '../utils/errors/FailingMigrationError';
 import UnprocessedMigrationError from '../utils/errors/UnprocessedMigrationError';
 import assertLocked from '../utils/tests/assertLocked';
 import createMigrationProcess from '../utils/tests/createMigrationProcess';
 import createTestDownMigration from '../utils/tests/createTestDownMigration';
+import { testMigrationKey } from '../utils/tests/createTestUpMigration';
 import TestFactory from '../utils/tests/TestFactory';
-import MigrationDictionary from '../utils/types/MigrationDictionary';
+import Migration from '../utils/types/Migration';
 
 const testRollbackByKey: TestFactory = (repoFactory) => {
   const successfulMigration = createTestDownMigration();
   const failingMigration = createTestDownMigration(() => { throw new Error(); });
 
-  const createService = (migrations: MigrationDictionary) => {
+  const createService = (migrations: Migration[] = []) => {
     const log = () => null;
     return factory({ log, repo: repoFactory(migrations) });
   };
 
   describe('rollbackByKey', () => {
     it('should error when the migration is missing', async () => {
-      const service = createService({});
+      const service = createService();
       const promise = service.rollbackByKey({ key: 'missingKey' });
       await assertRejects(promise, UnprocessedMigrationError);
     });
 
+    it('should error when there are duplicate keys', async () => {
+      await createService([createTestDownMigration()]).migrate();
+      const service = createService([createTestDownMigration(), createTestDownMigration()]);
+      const promise = service.rollbackByKey({ key: testMigrationKey });
+      await assertRejects(promise, DuplicateKeyError);
+    });
+
     it('should error when the migration errors', async () => {
-      const service = createService({ failingMigration });
+      const service = createService([failingMigration]);
       await service.migrate();
-      const promise = service.rollbackByKey({ key: 'failingMigration' });
+      const promise = service.rollbackByKey({ key: testMigrationKey });
       await assertRejects(promise, FailingMigrationError);
     });
 
     it('should rollback processed migration', async () => {
       const { process, getProcessed } = createMigrationProcess();
-      const service = createService({ testMigration: createTestDownMigration(process) });
+      const service = createService([createTestDownMigration(process)]);
       await service.migrate();
-      await service.rollbackByKey({ key: 'testMigration' });
+      await service.rollbackByKey({ key: testMigrationKey });
       assert.equal(getProcessed(), true);
     });
 
     it('should error when rolling back unprocessed migrations without force', async () => {
       const { process, getProcessed } = createMigrationProcess();
-      const service = createService({ testMigration: createTestDownMigration(process) });
-      const promise = service.rollbackByKey({ key: 'testMigration' });
+      const service = createService([createTestDownMigration(process)]);
+      const promise = service.rollbackByKey({ key: testMigrationKey });
       await assertRejects(promise, UnprocessedMigrationError);
       assert.equal(getProcessed(), false);
     });
 
     it('should rollback when rolling back a unprocessed migration with force', async () => {
       const { process, getProcessed } = createMigrationProcess();
-      const service = createService({ testMigration: createTestDownMigration(process) });
-      await service.rollbackByKey({ key: 'testMigration', force: true });
+      const service = createService([createTestDownMigration(process)]);
+      await service.rollbackByKey({ key: testMigrationKey, force: true });
       assert.equal(getProcessed(), true);
     });
 
     it('should error when migrations are locked', async () => {
-      const service = createService({ successfulMigration });
+      const service = createService([successfulMigration]);
       await service.migrate();
       await assertLocked([
-        service.rollbackByKey({ key: 'successfulMigration' }),
-        service.rollbackByKey({ key: 'successfulMigration' }),
+        service.rollbackByKey({ key: testMigrationKey }),
+        service.rollbackByKey({ key: testMigrationKey }),
       ]);
     });
   });

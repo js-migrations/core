@@ -1,6 +1,6 @@
 import RepoFacade from '../../RepoFacade';
-import MigrationDictionary from '../types/MigrationDictionary';
+import Migration from '../types/Migration';
 
-type TestFactory = (repoFactory: (migrations: MigrationDictionary) => RepoFacade) => void;
+type TestFactory = (repoFactory: (migrations: Migration[]) => RepoFacade) => void;
 
 export default TestFactory;

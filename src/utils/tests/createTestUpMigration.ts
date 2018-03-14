@@ -1,11 +1,9 @@
 import Migration from '../types/Migration';
 
-export default (process: Function = () => null): Migration => {
-  return {
-    down: async () => {
-      /* istanbul ignore next */
-      return;
-    },
-    up: async () => { return process(); },
-  };
+export const testMigrationKey = 'testMigration';
+
+export default (process: Function = () => null, key = testMigrationKey): Migration => {
+  const down = async () => { /* istanbul ignore next */ };
+  const up = async () => { return process(); };
+  return { down, key, up };
 };
