@@ -28,6 +28,12 @@ const testRollbackByKey: TestFactory = (createService) => {
       await assertRejects(promise, DuplicateKeyError);
     });
 
+    it('should not error when the migration fails during a dry run', async () => {
+      const service = createService([failingMigration]);
+      await service.migrate();
+      await service.rollbackByKey({ key: testMigrationKey, dryRun: true });
+    });
+
     it('should error when the migration errors', async () => {
       const service = createService([failingMigration]);
       await service.migrate();

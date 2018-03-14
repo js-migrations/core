@@ -37,6 +37,12 @@ const testRollback: TestFactory = (createService) => {
       await assertRejects(promise, MissingMigrationError);
     });
 
+    it('should not error when the migration fails during a dry run', async () => {
+      const service = createService([failingMigration]);
+      await service.migrate();
+      await service.rollback({ dryRun: true });
+    });
+
     it('should error when the first migration errors', async () => {
       const service = createService([failingMigration, successfulMigration]);
       await service.migrate();
