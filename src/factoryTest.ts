@@ -4,16 +4,16 @@ import rollbackTest from './rollback/test';
 import rollbackByKeyTest from './rollbackByKey/test';
 import TestFactory from './utils/tests/TestFactory';
 
-const testFactory: TestFactory = (repoFactory) => {
+const testFactory: TestFactory = (serviceFactory) => {
   describe('factory', () => {
     beforeEach(async () => {
-      await repoFactory([]).clearMigrations();
+      await serviceFactory([]).clearMigrations();
     });
 
-    migrateTest(repoFactory);
-    migrateByKeyTest(repoFactory);
-    rollbackTest(repoFactory);
-    rollbackByKeyTest(repoFactory);
+    migrateTest(serviceFactory);
+    migrateByKeyTest(serviceFactory);
+    rollbackTest(serviceFactory);
+    rollbackByKeyTest(serviceFactory);
   });
 };
 
