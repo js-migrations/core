@@ -16,14 +16,17 @@ const testMigrate: TestFactory = (createService) => {
 
   describe('migrate', () => {
     it('should not error when there are no migrations', async () => {
-      const service = createService([]);
-      await service.migrate();
+      await createService([]).migrate();
     });
 
     it('should error when there are duplicate keys', async () => {
       const service = createService([createTestUpMigration(), createTestUpMigration()]);
       const promise = service.migrate();
       await assertRejects(promise, DuplicateKeyError);
+    });
+
+    it('should not error when a migration fails during a dry run', async () => {
+      await createService([failingMigration]).migrate({ dryRun: true });
     });
 
     it('should error when the first migration errors', async () => {

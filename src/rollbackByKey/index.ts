@@ -6,14 +6,14 @@ import rollbackKey from '../utils/rollbackKey';
 import Signature from './Signature';
 
 export default (config: FacadeConfig): Signature => {
-  return async ({ key, force = false }) => {
+  return async ({ key, force = false, dryRun = false }) => {
     await handleLocks(config, async () => {
       const isProcessed = await hasProcessedKey(config, key);
       if (!isProcessed && !force) {
         throw new UnprocessedMigrationError(key);
       }
 
-      await rollbackKey({ config, key });
+      await rollbackKey({ config, key, dryRun });
     });
   };
 };
