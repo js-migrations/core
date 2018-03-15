@@ -21,3 +21,19 @@ const migrationsServiceFacade = migrationsServiceFactory({
   repo: migrationsRepoFacade,
 });
 ```
+
+### Intentions
+- Create an API for processing migrations in applications storing data in multiple ways (e.g. databases and files).
+- Allow processed migrations to be recorded in a common format across databases.
+- Focus on functions rather than files to improve type checking and composability.
+- Focus on migrations being a function of the application more than a developer tool.
+
+### Avoiding downtime
+To avoid downtime caused by deleting columns in migrations it's recommended that you make two releases as explained below where the code changes are deployed before the migrations are processed.
+
+- Initial release
+  - Code change: Stop reading deleted columns.
+  - Migration: Make columns to be deleted optional (if not already).
+- Final release
+  - Code change: Stop writing to deleted columns.
+  - Migration: Delete the columns.
