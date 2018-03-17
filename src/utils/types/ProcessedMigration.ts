@@ -1,5 +1,6 @@
 export default interface ProcessedMigration {
   readonly key: string;
-  readonly lastStart: Date;
-  readonly lastBatch: Date;
+  readonly processStart: Date;
+  readonly processEnd: Date;
+  readonly batchStart: Date;
 }

@@ -15,16 +15,18 @@ export default async ({ config, key, batchStart, dryRun }: Opts) => {
   const selectedMigration = getMigrationByKey(migrations, key);
   config.log(`Starting to migrate with ${key}`);
   if (!dryRun) {
-    const migrationStart = new Date();
+    const processStart = new Date();
     try {
       await selectedMigration.up();
     } catch (err) {
       throw new FailingMigrationError(key, err);
     }
-    await config.repo.updateProcessedMigration({
+    const processEnd = new Date();
+    await config.repo.recordProcessedMigration({
+      batchStart: defaultTo(batchStart, processStart),
       key,
-      lastBatch: defaultTo(batchStart, migrationStart),
-      lastStart: migrationStart,
+      processEnd,
+      processStart,
     });
   }
   config.log(`Completed migration with ${key}`);
