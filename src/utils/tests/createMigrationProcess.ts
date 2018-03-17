@@ -1,7 +1,10 @@
+import { delay } from 'bluebird';
+
 export default () => {
-  let processed = false; // tslint:disable-line:no-let
-  const process = () => {
-    processed = true;
+  let processed: Date | undefined; // tslint:disable-line:no-let
+  const process = async () => {
+    await Promise.resolve(delay(1));
+    processed = new Date();
   };
   const getProcessed = () => {
     return processed;

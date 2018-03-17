@@ -46,7 +46,7 @@ const testRollbackByKey: TestFactory = (createService) => {
       const service = createService([createTestDownMigration(process)]);
       await service.migrate();
       await service.rollbackByKey({ key: testMigrationKey });
-      assert.equal(getProcessed(), true);
+      assert.notEqual(getProcessed(), undefined);
     });
 
     it('should error when rolling back unprocessed migrations without force', async () => {
@@ -54,14 +54,14 @@ const testRollbackByKey: TestFactory = (createService) => {
       const service = createService([createTestDownMigration(process)]);
       const promise = service.rollbackByKey({ key: testMigrationKey });
       await assertRejects(promise, UnprocessedMigrationError);
-      assert.equal(getProcessed(), false);
+      assert.equal(getProcessed(), undefined);
     });
 
     it('should rollback when rolling back a unprocessed migration with force', async () => {
       const { process, getProcessed } = createMigrationProcess();
       const service = createService([createTestDownMigration(process)]);
       await service.rollbackByKey({ key: testMigrationKey, force: true });
-      assert.equal(getProcessed(), true);
+      assert.notEqual(getProcessed(), undefined);
     });
 
     it('should error when migrations are locked', async () => {

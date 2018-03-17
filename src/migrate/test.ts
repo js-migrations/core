@@ -3,6 +3,7 @@ import * as assertRejects from 'assert-rejects';
 import 'mocha'; // tslint:disable-line:no-import-side-effect
 import DuplicateKeyError from '../utils/errors/DuplicateKeyError';
 import FailingMigrationError from '../utils/errors/FailingMigrationError';
+import assertDateOrder from '../utils/tests/assertDateOrder';
 import assertLocked from '../utils/tests/assertLocked';
 import createMigrationProcess from '../utils/tests/createMigrationProcess';
 import createTestUpMigration from '../utils/tests/createTestUpMigration';
@@ -39,18 +40,25 @@ const testMigrate: TestFactory = (createService) => {
       await assertRejects(promise, FailingMigrationError);
     });
 
-    it('should process migrations', async () => {
-      const { process, getProcessed } = createMigrationProcess();
-      const service = createService([createTestUpMigration(process)]);
+    it('should process migrations in order', async () => {
+      const firstProcess = createMigrationProcess();
+      const secondProcess = createMigrationProcess();
+      const service = createService([
+        createTestUpMigration(firstProcess.process, 'firstMigration'),
+        createTestUpMigration(secondProcess.process, 'secondMigration'),
+      ]);
       await service.migrate();
-      assert.equal(getProcessed(), true);
+      assert.notEqual(firstProcess.getProcessed(), undefined);
+      assert.notEqual(secondProcess.getProcessed(), undefined);
+      const processes = [firstProcess.getProcessed(), secondProcess.getProcessed()];
+      assertDateOrder(processes as Date[]);
     });
 
     it('should not reprocess migrations', async () => {
       const { process, getProcessed } = createMigrationProcess();
       await createService([createTestUpMigration()]).migrate();
       await createService([createTestUpMigration(process)]).migrate();
-      assert.equal(getProcessed(), false);
+      assert.equal(getProcessed(), undefined);
     });
 
     it('should skip processed migrations after unprocessed migrations', async () => {
@@ -61,8 +69,8 @@ const testMigrate: TestFactory = (createService) => {
         createTestUpMigration(unskippedProcess.process),
         createTestUpMigration(skippedProcess.process, skippableKey),
       ]).migrate();
-      assert.equal(skippedProcess.getProcessed(), false);
-      assert.equal(unskippedProcess.getProcessed(), true);
+      assert.equal(skippedProcess.getProcessed(), undefined);
+      assert.notEqual(unskippedProcess.getProcessed(), undefined);
     });
 
     it('should skip processed migrations before unprocessed migrations', async () => {
@@ -73,8 +81,8 @@ const testMigrate: TestFactory = (createService) => {
         createTestUpMigration(skippedProcess.process, skippableKey),
         createTestUpMigration(unskippedProcess.process),
       ]).migrate();
-      assert.equal(skippedProcess.getProcessed(), false);
-      assert.equal(unskippedProcess.getProcessed(), true);
+      assert.equal(skippedProcess.getProcessed(), undefined);
+      assert.notEqual(unskippedProcess.getProcessed(), undefined);
     });
 
     it('should error when migrations are locked', async () => {

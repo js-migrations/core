@@ -5,6 +5,7 @@ import 'mocha'; // tslint:disable-line:no-import-side-effect
 import DuplicateKeyError from '../utils/errors/DuplicateKeyError';
 import FailingMigrationError from '../utils/errors/FailingMigrationError';
 import MissingMigrationError from '../utils/errors/MissingMigrationError';
+import assertDateOrder from '../utils/tests/assertDateOrder';
 import assertLocked from '../utils/tests/assertLocked';
 import createMigrationProcess from '../utils/tests/createMigrationProcess';
 import createTestDownMigration from '../utils/tests/createTestDownMigration';
@@ -57,19 +58,26 @@ const testRollback: TestFactory = (createService) => {
       await assertRejects(promise, FailingMigrationError);
     });
 
-    it('should process rollback for a processed migration', async () => {
-      const { process, getProcessed } = createMigrationProcess();
-      const service = createService([createTestDownMigration(process)]);
+    it('should process rollbacks for processed migrations in reverse order', async () => {
+      const firstProcess = createMigrationProcess();
+      const secondProcess = createMigrationProcess();
+      const service = createService([
+        createTestDownMigration(firstProcess.process, 'firstMigration'),
+        createTestDownMigration(secondProcess.process, 'secondMigration'),
+      ]);
       await service.migrate();
       await service.rollback();
-      assert.equal(getProcessed(), true);
+      assert.notEqual(firstProcess.getProcessed(), undefined);
+      assert.notEqual(secondProcess.getProcessed(), undefined);
+      const processes = [secondProcess.getProcessed(), firstProcess.getProcessed()];
+      assertDateOrder(processes as Date[]);
     });
 
     it('should not process rollback for a unprocessed migration', async () => {
       const { process, getProcessed } = createMigrationProcess();
       const service = createService([createTestDownMigration(process)]);
       await service.rollback();
-      assert.equal(getProcessed(), false);
+      assert.equal(getProcessed(), undefined);
     });
 
     it('should skip unprocessed migrations after processed migrations', async () => {
@@ -80,8 +88,8 @@ const testRollback: TestFactory = (createService) => {
         createTestDownMigration(unskippedProcess.process, unskippableKey),
         createTestDownMigration(skippedProcess.process),
       ]).rollback();
-      assert.equal(skippedProcess.getProcessed(), false);
-      assert.equal(unskippedProcess.getProcessed(), true);
+      assert.equal(skippedProcess.getProcessed(), undefined);
+      assert.notEqual(unskippedProcess.getProcessed(), undefined);
     });
 
     it('should skip unprocessed migrations before processed migrations', async () => {
@@ -92,8 +100,8 @@ const testRollback: TestFactory = (createService) => {
         createTestDownMigration(skippedProcess.process),
         createTestDownMigration(unskippedProcess.process, unskippableKey),
       ]).rollback();
-      assert.equal(skippedProcess.getProcessed(), false);
-      assert.equal(unskippedProcess.getProcessed(), true);
+      assert.equal(skippedProcess.getProcessed(), undefined);
+      assert.notEqual(unskippedProcess.getProcessed(), undefined);
     });
 
     it('should error when migrations are locked', async () => {
