@@ -42,7 +42,7 @@ const testMigrateByKey: TestFactory = (createService) => {
       const { process, getProcessed } = createMigrationProcess();
       const service = createService([createTestUpMigration(process)]);
       await service.migrateByKey({ key: testMigrationKey });
-      assert.equal(getProcessed(), true);
+      assert.notEqual(getProcessed(), undefined);
     });
 
     it('should error when reprocessing migrations without force', async () => {
@@ -51,7 +51,7 @@ const testMigrateByKey: TestFactory = (createService) => {
       const service = createService([createTestUpMigration(process)]);
       const promise = service.migrateByKey({ key: testMigrationKey });
       await assertRejects(promise, ProcessedMigrationError);
-      assert.equal(getProcessed(), false);
+      assert.equal(getProcessed(), undefined);
     });
 
     it('should reprocess migration when using force', async () => {
@@ -59,7 +59,7 @@ const testMigrateByKey: TestFactory = (createService) => {
       await createService([createTestUpMigration()]).migrate();
       const service = createService([createTestUpMigration(process)]);
       await service.migrateByKey({ key: testMigrationKey, force: true });
-      assert.equal(getProcessed(), true);
+      assert.notEqual(getProcessed(), undefined);
     });
 
     it('should error when migrations are locked', async () => {

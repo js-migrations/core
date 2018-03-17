@@ -8,7 +8,7 @@ import Signature, { Opts } from './Signature';
 export default (config: FacadeConfig): Signature => {
   return async ({ dryRun = false }: Opts = {}) => {
     await handleLocks(config, async () => {
-      const lastBatchKeys = await getLastBatchKeys(config);
+      const lastBatchKeys = (await getLastBatchKeys(config)).reverse();
 
       await Promise.resolve(reduce(lastBatchKeys, async (_result, key) => {
         await rollbackKey({ config, key, dryRun });
