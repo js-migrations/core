@@ -7,10 +7,7 @@ import Status from './statuses/Status';
 import UnlockedCompletionStatus from './statuses/UnlockedCompletionStatus';
 import UnlockedErrorStatus from './statuses/UnlockedErrorStatus';
 
-export default (status: Status) => {
-  const log = (_message: string) => {
-    return;
-  };
+export default (status: Status, log = (_message: string) => { return; }) => {
   if (status instanceof LockedStatus) {
     log('Locked migrations');
   } else if (status instanceof MigrationEndStatus) {

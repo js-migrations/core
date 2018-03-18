@@ -17,7 +17,6 @@ This package contains the [RepoFacade TypeScript interface](./src/RepoFacade.ts)
 import migrationsServiceFactory from '@js-migrations/core/dist/factory';
 
 const migrationsServiceFacade = migrationsServiceFactory({
-  log: console.log.bind(console),
   repo: migrationsRepoFacade,
 });
 ```
