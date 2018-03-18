@@ -72,6 +72,15 @@ const testRollbackByKey: TestFactory = (createService) => {
         service.rollbackByKey({ key: testMigrationKey }),
       ]);
     });
+
+    it('should only rollback a migration once when its migrated more than once', async () => {
+      const service = createService([createTestDownMigration()]);
+      await service.migrate();
+      await service.migrateByKey({ key: testMigrationKey, force: true });
+      await service.rollback();
+      const promise = service.rollbackByKey({ key: testMigrationKey });
+      await assertRejects(promise, UnprocessedMigrationError);
+    });
   });
 };
 
