@@ -23,6 +23,9 @@ const testRepoFactory = (migrations: Migration[]): RepoFacade => {
       }
       hasLockedMigrations = true;
     },
+    recordProcessedMigration: async (migration) => {
+      processedMigrations = [...processedMigrations, migration];
+    },
     removeProcessedMigration: async (key) => {
       processedMigrations = processedMigrations.filter((processedMigration) => {
         return processedMigration.key !== key;
@@ -30,12 +33,6 @@ const testRepoFactory = (migrations: Migration[]): RepoFacade => {
     },
     unlockMigrations: async () => {
       hasLockedMigrations = false;
-    },
-    updateProcessedMigration: async (migration) => {
-      const unmatchedMigrations = processedMigrations.filter((processedMigration) => {
-        return processedMigration.key !== migration.key;
-      });
-      processedMigrations = [...unmatchedMigrations, migration];
     },
   };
 };
