@@ -1,14 +1,23 @@
 import FacadeConfig from '../FacadeConfig';
+import LockedStatus from './statuses/LockedStatus';
+import Status from './statuses/Status';
+import UnlockedCompletionStatus from './statuses/UnlockedCompletionStatus';
+import UnlockedErrorStatus from './statuses/UnlockedErrorStatus';
 
-export default async (config: FacadeConfig, handler: () => Promise<void>) => {
+export interface Opts {
+  readonly config: FacadeConfig;
+  readonly log: (status: Status) => void;
+}
+
+export default async ({ config, log }: Opts, handler: () => Promise<void>) => {
   await config.repo.lockMigrations();
-  config.log('Locked migrations');
+  log(new LockedStatus());
   try {
     await handler();
-    config.log('Unlocked migrations after completion');
+    log(new UnlockedCompletionStatus());
     await config.repo.unlockMigrations();
   } catch (err) {
-    config.log('Unlocked migrations after error');
+    log(new UnlockedErrorStatus());
     await config.repo.unlockMigrations();
     throw err;
   }

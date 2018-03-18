@@ -6,6 +6,6 @@ import factoryTest from './factoryTest';
 import testRepoFactory from './utils/tests/testRepoFactory';
 
 factoryTest((migrations) => {
-  const log = () => null;
-  return factory({ log, repo: testRepoFactory(migrations) });
+  const repo = testRepoFactory(migrations);
+  return factory({ repo });
 });

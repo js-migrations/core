@@ -2,18 +2,22 @@ import { defaultTo } from 'lodash';
 import FacadeConfig from '../FacadeConfig';
 import FailingMigrationError from './errors/FailingMigrationError';
 import getMigrationByKey from './getMigrationByKey';
+import MigrationEndStatus from './statuses/MigrationEndStatus';
+import MigrationStartStatus from './statuses/MigrationStartStatus';
+import Status from './statuses/Status';
 
 export interface Opts {
   readonly config: FacadeConfig;
   readonly key: string;
   readonly batchStart?: Date;
   readonly dryRun: boolean;
+  readonly log: (status: Status) => void;
 }
 
-export default async ({ config, key, batchStart, dryRun }: Opts) => {
+export default async ({ config, key, batchStart, dryRun, log }: Opts) => {
   const migrations = await config.repo.getMigrations();
   const selectedMigration = getMigrationByKey(migrations, key);
-  config.log(`Starting to migrate with ${key}`);
+  log(new MigrationStartStatus(key));
   if (!dryRun) {
     const processStart = new Date();
     try {
@@ -29,5 +33,5 @@ export default async ({ config, key, batchStart, dryRun }: Opts) => {
       processStart,
     });
   }
-  config.log(`Completed migration with ${key}`);
+  log(new MigrationEndStatus(key));
 };
