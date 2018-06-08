@@ -35,7 +35,7 @@
     "@types/bluebird": "3.5.20",
     "@types/lodash": "4.14.109",
     "@types/mocha": "5.2.1",
-    "@types/node": "8.10.18",
+    "@types/node": "8.10.19",
     "@types/source-map-support": "0.4.1",
     "assert-rejects": "0.1.1",
     "jscpd": "0.6.18",
