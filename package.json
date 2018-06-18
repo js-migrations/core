@@ -38,7 +38,7 @@
     "@types/node": "8.10.20",
     "@types/source-map-support": "0.4.1",
     "assert-rejects": "0.1.1",
-    "jscpd": "0.6.20",
+    "jscpd": "0.6.21",
     "mocha": "5.2.0",
     "nyc": "11.9.0",
     "rimraf": "2.6.2",
