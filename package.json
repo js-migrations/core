@@ -34,7 +34,7 @@
     "@ht2-labs/typescript-project": "1.0.21",
     "@types/bluebird": "3.5.22",
     "@types/lodash": "4.14.112",
-    "@types/mocha": "5.2.4",
+    "@types/mocha": "5.2.5",
     "@types/node": "8.10.21",
     "@types/source-map-support": "0.4.1",
     "assert-rejects": "0.1.1",
