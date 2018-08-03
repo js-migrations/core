@@ -33,7 +33,7 @@
     "@ht2-labs/semantic-release": "1.1.7",
     "@ht2-labs/typescript-project": "1.0.24",
     "@types/bluebird": "3.5.23",
-    "@types/lodash": "4.14.115",
+    "@types/lodash": "4.14.116",
     "@types/mocha": "5.2.5",
     "@types/node": "8.10.23",
     "@types/source-map-support": "0.4.1",
