@@ -1,4 +1,4 @@
-import { delay } from 'bluebird';
+import delay from '../delay';
 
 export default () => {
   let processed: Date | undefined; // tslint:disable-line:no-let

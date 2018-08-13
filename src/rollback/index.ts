@@ -1,4 +1,3 @@
-import { reduce } from 'bluebird';
 import FacadeConfig from '../FacadeConfig';
 import defaultLog from '../utils/defaultLog';
 import getLastBatchKeys from '../utils/getLastBatchKeys';
@@ -11,9 +10,11 @@ export default (config: FacadeConfig): Signature => {
     await handleLocks({ config, log }, async () => {
       const lastBatchKeys = (await getLastBatchKeys(config)).reverse();
 
-      await Promise.resolve(reduce(lastBatchKeys, async (_result, key) => {
-        await rollbackKey({ config, key, dryRun, log });
-      }, Promise.resolve()));
+      await lastBatchKeys.reduce((promiseChain, key) => {
+        return promiseChain.then(() => {
+          return rollbackKey({ config, key, dryRun, log });
+        });
+      }, Promise.resolve());
     });
   };
 };
