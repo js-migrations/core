@@ -40,7 +40,7 @@
     "mocha": "5.2.0",
     "nyc": "11.9.0",
     "rimraf": "2.6.2",
-    "source-map-support": "0.5.8"
+    "source-map-support": "0.5.9"
   },
   "publishConfig": {
     "access": "public"
