@@ -1,5 +1,5 @@
 # core
-Provides a database agnostic service for processing migrations in JavaScript. [Read the docs for more information](./docs/readme.md).
+> Provides a database agnostic service for processing migrations in JavaScript. [Read the docs for more information](./docs/readme.md).
 
 ### Usage
 1. Install it with `npm i @js-migrations/core`.
