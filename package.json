@@ -31,7 +31,7 @@
   "devDependencies": {
     "@ht2-labs/semantic-release": "1.1.48",
     "@ht2-labs/typescript-project": "1.1.0",
-    "@types/lodash": "4.14.118",
+    "@types/lodash": "4.14.119",
     "@types/mocha": "5.2.5",
     "@types/node": "8.10.38",
     "@types/source-map-support": "0.4.1",
