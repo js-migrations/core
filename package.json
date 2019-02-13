@@ -32,7 +32,7 @@
     "@ht2-labs/semantic-release": "1.1.59",
     "@ht2-labs/typescript-project": "1.1.0",
     "@types/lodash": "4.14.121",
-    "@types/mocha": "5.2.5",
+    "@types/mocha": "5.2.6",
     "@types/node": "8.10.40",
     "@types/source-map-support": "0.4.1",
     "assert-rejects": "0.1.1",
