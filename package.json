@@ -7,7 +7,7 @@
     "url": "https://github.com/js-migrations/core"
   },
   "author": "js-migrations",
-  "license": "GPL-3.0",
+  "license": "MIT",
   "files": [
     "dist"
   ],
